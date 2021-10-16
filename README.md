@@ -1,2 +1,2 @@
-# sns-text-scraper
-SNS text scraper
+# SNS text scraper
+Scrape texts from different SNS.
