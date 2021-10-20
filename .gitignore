@@ -1,3 +1,6 @@
 /sns
+/.vscode
 .DS_Store
 .ipynb_checkpoints
+*.ipynb
+*.yml
