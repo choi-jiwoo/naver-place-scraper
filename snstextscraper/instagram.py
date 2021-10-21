@@ -6,7 +6,7 @@ import yaml
 
 
 # configuration
-with open('../config.yml', 'r') as f:
+with open('config.yml', 'r') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 ID = config['instagram']['username']
@@ -21,8 +21,8 @@ sleep(1)
 username_input = browser.find_element_by_css_selector("input[name='username']")
 password_input = browser.find_element_by_css_selector("input[name='password']")
 
-username_input.send_keys("")
-password_input.send_keys("")
+username_input.send_keys(ID)
+password_input.send_keys(PW)
 
 login_button = browser.find_element_by_xpath("//button[@type='submit']")
 login_button.click()
@@ -36,8 +36,24 @@ for i in range(0, 2):
 # flow 3: search hashtag
 search_input = browser.find_element_by_css_selector("input[placeholder='검색']")
 search_input.send_keys("#애플망고1947")
+sleep(1)
 search_input.send_keys(Keys.DOWN)
 search_input.send_keys(Keys.RETURN)
 
-# flow 4: close chrome webdriver
-browser.close()
+# flow 4: click on the first post
+imgs_parent = browser.find_element_by_xpath("//img[@class='FFVAD']/parent::div[1]")
+first_post = imgs_parent.find_element_by_xpath("./following-sibling::div[1]")
+first_post.click()
+
+# flow 5: get post content
+content = browser.find_element_by_xpath("//li[@role='menuitem']")
+content_text = content.text
+
+# flow 6: click 'next' button
+next_post = browser.find_element_by_xpath("//a[text()='다음']")
+next_post.click()
+
+# loop between flow 5 and flow 6
+
+# flow : close chrome webdriver
+browser.quit()
