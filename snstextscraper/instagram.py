@@ -29,8 +29,8 @@ login_button.click()
 
 # flow 2: close pop-ups
 for i in range(0, 2):
-    not_not_button = driver.find_element_by_xpath("//button[text()='나중에 하기']")
-    not_not_button.click()
+    not_now_button = driver.find_element_by_xpath("//button[text()='나중에 하기']")
+    not_now_button.click()
     sleep(2)
 
 # flow 3: search hashtag
