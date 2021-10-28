@@ -1,5 +1,3 @@
-# TO DO: Divide each flows by its functionality.
-#        Remove duplicated code when making http request.
 from snstextscraper.httprequest import HttpRequest
 import pandas as pd
 
