@@ -1,5 +1,4 @@
 from snstextscraper.httprequest import HttpRequest
-import pandas as pd
 
 
 # default latitude and longitude used when opening map.
@@ -33,7 +32,7 @@ class Store:
 
         return description
 
-    def get_reviews(self) -> pd.DataFrame:
+    def get_reviews(self) -> dict:
         url = 'https://api.place.naver.com/graphql'
         # grapql query
         query = ('query getVisitorReviews($input: VisitorReviewsInput) {'
@@ -126,6 +125,7 @@ class Store:
             'query': query
         }
         data = HttpRequest(url, 'post', payload).data
-        reviews = data['data']['visitorReviews']['items']
+        review_meta = data['data']['visitorReviews']['items']
+        reviews = {x['author']['nickname']: x['body'] for x in review_meta}
 
         return reviews
