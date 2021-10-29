@@ -41,7 +41,7 @@ driver = driver.driver()
 insta = Instagram(driver)
 insta.login('<username>', '<password>')
 insta.search('<store name>')
-post = insta.get_contents() # dictionary in {author: post} form
+post = insta.get_contents() # dictionary in {author: caption} form
 insta.next_post()
 
 insta.driver.quit()  # if headless option in Driver is False
