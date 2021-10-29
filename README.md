@@ -21,14 +21,13 @@ from snstextscraper.naverplace import Store
 
 store = Store('<store name>')
 
-id = store.id
 description = store.description
 reviews = store.reviews  # dictionary in {author: review} form
 ```
 
 ### Instagram
 
-인스타그램에서 검색 결과로 나온 게시물들의 게시글을 추출.
+인스타그램에서 검색 결과로 나온 게시물들의 caption을 추출.
 
 #### Quick start
 
@@ -36,7 +35,7 @@ reviews = store.reviews  # dictionary in {author: review} form
 from snstextscraper.driver import Driver
 from snstextscraper.instagram import Instagram
 
-driver = Driver('<path to chromedriver>')
+driver = Driver('<path to chromedriver>', headless=False)
 driver = driver.driver()
 
 insta = Instagram(driver)
