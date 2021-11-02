@@ -61,7 +61,7 @@ for i in range(num_of_posts):
     post = insta.get_contents()  # dictionary in {'author': author, 'caption': caption}
     posts.append(post)
     insta.next_post()
-    time.sleep(2)
+    time.sleep(2)  # be gentle in scraping data. Instagram might ban your account.
 
 posts = pd.DataFrame(posts)
 
