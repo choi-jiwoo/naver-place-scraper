@@ -19,16 +19,16 @@ $ pip install snstextscraper
 ```python
 from snstextscraper.naverplace import Store
 
-store = Store('<store name>')
+store = Store('<store name>', location='제주')  # location defaults to '서울'
 
 description = store.description
-reviews = store.reviews
+reviews = store.get_reviews()  # defaults to 100 reviews.
 ```
 
 #### Output
 
 ```
-reviews:
+reviews: pandas.DataFrame
 
 | author | review |
 |--------|--------|
@@ -74,7 +74,7 @@ insta.driver.close()
 #### Output
 
 ```
-posts:
+posts: pandas.DataFrame
 
 | author | caption |
 |--------|---------|
@@ -86,4 +86,3 @@ posts:
 이 프로젝트는 비상업적 용도를 위해 제작되었습니다. 용도에 맞게 사용해주시길 바랍니다.
 
 또한 인스타그램은 데이터 보안 정책상 공식적으로 봇을 사용한 크롤링을 하지 못하게 일정량 리밋을 걸거나 봇으로 의심되는 계정을 정지시키기도 합니다. 인스타그램 데이터를 크롤링할 땐 부계정 사용을 권장하고, 발생할 수 있는 불이익들을 생각해보고 진행하시길 바랍니다. 본인 책임 하에 사용바라며, 사용 중 발생하는 모든 불이익들에 대해 제작자는 책임이 없음을 알려드립니다. (가장 좋은 방법은 [인스타그램 API](https://developers.facebook.com/docs/instagram)를 사용하는 것)
-
