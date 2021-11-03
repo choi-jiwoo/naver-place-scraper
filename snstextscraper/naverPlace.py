@@ -1,28 +1,37 @@
 from snstextscraper.httprequest import HttpRequest
+import pandas as pd
 
 
 # default latitude and longitude used when opening map.
-BASE_LAT = 37.278039
-BASE_LONG = 127.0397669
+BASE_LAT = 33.3789412
+BASE_LONG = 126.5618716
 
 
 class Store:
 
-    def __init__(self, store_name: str) -> None:
+    def __init__(self, store_name: str, location: str = '서울') -> None:
         self.store_name = store_name
+        self.location = location
         self.id = self.get_id()
         self.description = self.get_description()
-        self.reviews = self.get_reviews()
 
     def get_id(self) -> str:
-        url = ('https://map.naver.com/v5/api/instantSearch?'
-               'lang=ko&caller=pcweb&types=place,address,bus&'
-               f'coords={BASE_LAT},{BASE_LONG}&query={self.store_name}')
-        data = HttpRequest(url).data
-        id = data['place'][0]['id']
-        distance = data['place'][0]['dist']  # might be used in the future
+        url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
+               f'query={self.store_name}&type=all&'
+               f'searchCoord={BASE_LONG};{BASE_LAT}&page=1&displayCount=20&'
+               'isPlaceRecommendationReplace=true&lang=ko')
 
-        return id
+        data = HttpRequest(url).data
+
+        try:
+            search_result = data['result']['place']['list']
+            candidate = pd.DataFrame(search_result)
+            result_by_loc = candidate['roadAddress'].str.contains(self.location)
+            rank_1_result = candidate[result_by_loc]
+            id = rank_1_result['id'].item()
+            return id
+        except TypeError:
+            print('조건에 맞는 업체가 없습니다.')
 
     def get_description(self) -> str:
         url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
@@ -32,7 +41,7 @@ class Store:
 
         return description
 
-    def get_reviews(self) -> dict:
+    def get_reviews(self, num_of_reviews: int = 100) -> dict:
         url = 'https://api.place.naver.com/graphql'
         # grapql query
         query = ('query getVisitorReviews($input: VisitorReviewsInput) {'
@@ -114,7 +123,7 @@ class Store:
                     'item': '0',
                     'bookingBusinessId': None,
                     'page': 1,
-                    'display': 100,
+                    'display': num_of_reviews,
                     'isPhotoUsed': False,
                     'theme': 'allTypes',
                     'includeContent': True,
