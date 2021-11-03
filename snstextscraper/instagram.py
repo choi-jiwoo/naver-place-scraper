@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from time import sleep
 
 
 class Instagram:
@@ -14,7 +13,7 @@ class Instagram:
     def __init__(self, driver: webdriver.Chrome) -> None:
         self.driver = driver
 
-    def login(self, id: str, pw: str, timeout: int = 5) -> None:
+    def login(self, id: str, pw: str) -> None:
         self.driver.get("https://www.instagram.com/")
 
         username_input = WebDriverWait(self.driver, 10).until(
@@ -34,13 +33,19 @@ class Instagram:
         submit.click()
 
         try:
+            login_failed = WebDriverWait(self.driver, 3).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//p[@id='slfErrorAlert']")  # only works in korean
+                )
+            )
+            print(login_failed.text)
+        except TimeoutException as e:
             for i in range(2):
-                self.close_pop_up(timeout)
-        except TimeoutException:
-            print("Login failed. Try again.")
+                self.close_pop_up()
+            print("Login success.")
 
-    def close_pop_up(self, timeout: int) -> None:
-        not_now_button = WebDriverWait(self.driver, timeout).until(
+    def close_pop_up(self) -> None:
+        not_now_button = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//button[contains(text(), '나중에 하기')]")  # only works in korean
             )).click()
@@ -63,8 +68,8 @@ class Instagram:
             EC.element_to_be_clickable((By.XPATH, "//li[@role='menuitem']"))
         )
         author = contents.find_elements_by_tag_name('span')[0].text
-        content_text = contents.find_elements_by_tag_name('span')[1].text
-        post = {author: content_text}
+        caption = contents.find_elements_by_tag_name('span')[1].text
+        post = {'author': author, 'caption': caption}
 
         return post
 
