@@ -16,6 +16,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 install_requires = [
+    'pandas>=1.3.3',
     'requests>=2.26.0',
     'selenium>=4.0.0',
 ]
@@ -26,7 +27,7 @@ project_urls = {
 
 setup(
     name='snstextscraper',
-    version='0.2.0',
+    version='0.3.0',
     author='Choi Jiwoo',
     author_email='cho2wldn@gmail.com',
     description=description,
