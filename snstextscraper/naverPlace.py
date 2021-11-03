@@ -135,6 +135,15 @@ class Store:
         }
         data = HttpRequest(url, 'post', payload).data
         review_meta = data['data']['visitorReviews']['items']
-        reviews = {x['author']['nickname']: x['body'] for x in review_meta}
+        reviews = []
+
+        for x in review_meta:
+            review = {
+                'author': x['author']['nickname'],
+                'review': x['body'],
+            }
+            reviews.append(review)
+
+        reviews = pd.DataFrame(reviews)
 
         return reviews
