@@ -31,8 +31,8 @@ class Search:
                 'most_relevant': most_relevant,
             }
             return info
-        except TypeError:
-            print('조건에 맞는 업체가 없습니다.')
+        except (TypeError, IndexError):
+            print(f'{self.store_name}. 조건에 맞는 업체가 없습니다.')
 
 
 class Store:
