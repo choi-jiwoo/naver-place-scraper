@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 
 class Instagram:
@@ -39,7 +40,7 @@ class Instagram:
                 )
             )
             print(login_failed.text)
-        except TimeoutException as e:
+        except TimeoutException:
             for i in range(2):
                 self.close_pop_up()
             print("Login success.")
@@ -60,7 +61,7 @@ class Instagram:
         first_post = first_img_parent_element.find_element_by_xpath(
             "./following-sibling::div[1]"
         )
-        sleep(2)
+        time.sleep(2)
         first_post.click()
 
     def get_contents(self) -> dict:
@@ -73,7 +74,19 @@ class Instagram:
 
         return post
 
-    def next_post(self) -> None:
+    def has_next(self) -> bool:
+        try:
+            next = WebDriverWait(self.driver, 3).until(
+                EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, "svg[aria-label='다음']")
+                )
+            )
+            return True
+        except TimeoutException:
+            print('No more post to show.')
+            return False
+        
+    def next_post(self) -> None:            
         actions = ActionChains(self.driver)
         actions.send_keys(Keys.RIGHT)
         actions.perform()
