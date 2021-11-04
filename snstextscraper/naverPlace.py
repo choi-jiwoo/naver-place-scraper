@@ -7,15 +7,13 @@ BASE_LAT = 33.3789412
 BASE_LONG = 126.5618716
 
 
-class Store:
+class Search:
 
     def __init__(self, store_name: str, location: str = '서울') -> None:
         self.store_name = store_name
         self.location = location
-        self.id = self.get_id()
-        self.description = self.get_description()
 
-    def get_id(self) -> str:
+    def get_search_result(self) -> str:
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
                f'query={self.store_name}&type=all&'
                f'searchCoord={BASE_LONG};{BASE_LAT}&page=1&displayCount=20&'
@@ -27,11 +25,20 @@ class Store:
             search_result = data['result']['place']['list']
             candidate = pd.DataFrame(search_result)
             result_by_loc = candidate['roadAddress'].str.contains(self.location)
-            rank_1_result = candidate[result_by_loc]
-            id = rank_1_result['id'].item()
-            return id
+            most_relevant = candidate[result_by_loc].iloc[0]
+            info = {
+                'search_results': candidate[result_by_loc],
+                'most_relevant': most_relevant,
+            }
+            return info
         except TypeError:
             print('조건에 맞는 업체가 없습니다.')
+
+
+class Store:
+
+    def __init__(self, id: str) -> None:
+        self.id = id
 
     def get_description(self) -> str:
         url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
