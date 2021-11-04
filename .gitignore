@@ -1,6 +1,7 @@
 /sns
 /build
 /dist
+/data
 /.vscode
 **/__pycache__
 *.egg-info
