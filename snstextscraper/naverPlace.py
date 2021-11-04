@@ -16,7 +16,7 @@ class Search:
     def get_search_result(self) -> str:
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
                f'query={self.store_name}&type=all&'
-               f'searchCoord={BASE_LONG};{BASE_LAT}&page=1&displayCount=20&'
+               f'searchCoord={BASE_LONG};{BASE_LAT}&page=1&displayCount=10&'
                'isPlaceRecommendationReplace=true&lang=ko')
 
         data = HttpRequest(url).data
