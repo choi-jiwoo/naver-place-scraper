@@ -60,6 +60,8 @@ num_of_posts = 5
 for i in range(num_of_posts):
     post = insta.get_contents()  # dictionary in {'author': author, 'caption': caption}
     posts.append(post)
+    if not insta.has_next():
+        break
     insta.next_post()
     time.sleep(5)  # be gentle in scraping data. Instagram might ban your account.
 
