@@ -17,23 +17,22 @@ $ pip install snstextscraper
 #### Quick start
 
 ```python
-from snstextscraper.naverplace import Search
 from snstextscraper.naverplace import Store
 
-search = Search('<store name>', location='제주')  # location defaults to '서울'
-search_result = search.get_search_result()
-all_results = search_result['search_results']
-most_relevant = search_result['most_relevant']
-store_id = most_relevant['id']
-
-store = Store(store_id)
+store = Store('<store name>', location='제주')  # location defaults to '서울'
 description = store.get_description()
 reviews = store.get_reviews()  # defaults to 100 reviews.
+
+search_results = store.info['search_results']  # list of search results
 ```
 
 #### Output
 
 ```
+description: str
+
+'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+
 reviews: pandas.DataFrame
 
 | author | review |
