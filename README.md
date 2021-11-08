@@ -16,14 +16,33 @@ $ pip install snstextscraper
 
 #### Quick start
 
+**Search by name**
+
+네이버 플레이스에 검색 결과에서 가장 첫번째 결과를 추출.
+
+검색 결과를 보고 싶을 땐 `store.info['search_results']`.
+
 ```python
 from snstextscraper.naverplace import Store
+
 
 store = Store('<store name>', location='제주')  # location defaults to '서울'
 description = store.get_description()
 reviews = store.get_reviews()  # defaults to 100 reviews.
 
 search_results = store.info['search_results']  # list of search results
+```
+
+**Search by id**
+
+업체의 id를 알때 사용.
+
+```python
+from snstextscraper.naverplace import Store
+
+store = Store('21270438', location='제주', by_id=True)
+description = store.get_description()
+reviews = store.get_reviews()
 ```
 
 #### Output
