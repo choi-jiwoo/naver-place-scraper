@@ -12,6 +12,7 @@ class Search:
     def __init__(self, store_name: str, location: str = '서울') -> None:
         self.store_name = store_name
         self.location = location
+        self.results = self.get_search_result()
 
     def get_search_result(self) -> str:
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
@@ -24,21 +25,36 @@ class Search:
         try:
             search_result = data['result']['place']['list']
             candidate = pd.DataFrame(search_result)
-            result_by_loc = candidate['roadAddress'].str.contains(self.location)
-            most_relevant = candidate[result_by_loc].iloc[0]
-            info = {
-                'search_results': candidate[result_by_loc],
-                'most_relevant': most_relevant,
-            }
-            return info
+
+            return candidate
         except (TypeError, IndexError, KeyError):
             print(f'{self.store_name}. 조건에 맞는 업체가 없습니다.')
 
+    def get_results_by_location(self) -> dict:
+        candidate = self.results
+        result_by_loc = candidate['roadAddress'].str.contains(self.location)
+        search_results = candidate[result_by_loc]
+        most_relevant = search_results.iloc[0]
+        info = {
+            'search_results': search_results,
+            'most_relevant': most_relevant,
+        }
 
-class Store:
+        return info
 
-    def __init__(self, id: str) -> None:
-        self.id = id
+
+class Store(Search):
+
+    def __init__(self, store_name: str, location: str = '서울') -> None:
+        super().__init__(store_name, location)
+        self.info = self.get_results_by_location()
+        self.id = self._get_id()
+
+    def _get_id(self) -> str:
+        most_relevant = self.info['most_relevant']
+        store_id = most_relevant['id']
+
+        return store_id
 
     def get_description(self) -> str:
         url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
