@@ -1,5 +1,5 @@
-from snstextscraper.httprequest import HttpRequest
 import pandas as pd
+from snstextscraper.httprequest import HttpRequest
 
 
 # default latitude and longitude used when opening map.
@@ -9,14 +9,13 @@ BASE_LONG = 126.5618716
 
 class Search:
 
-    def __init__(self, store_name: str, location: str = '서울') -> None:
-        self.store_name = store_name
+    def __init__(self, store: str, location: str = '서울') -> None:
+        self.store = store
         self.location = location
-        self.results = self.get_search_result()
 
     def get_search_result(self) -> str:
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
-               f'query={self.store_name}&type=all&'
+               f'query={self.store}&type=all&'
                f'searchCoord={BASE_LONG};{BASE_LAT}&page=1&displayCount=10&'
                'isPlaceRecommendationReplace=true&lang=ko')
 
@@ -28,10 +27,10 @@ class Search:
 
             return candidate
         except (TypeError, IndexError, KeyError):
-            print(f'{self.store_name}. 조건에 맞는 업체가 없습니다.')
+            print(f'{self.store}. 조건에 맞는 업체가 없습니다.')
 
     def get_results_by_location(self) -> dict:
-        candidate = self.results
+        candidate = self.get_search_result()
         result_by_loc = candidate['roadAddress'].str.contains(self.location)
         search_results = candidate[result_by_loc]
         most_relevant = search_results.iloc[0]
@@ -45,10 +44,14 @@ class Search:
 
 class Store(Search):
 
-    def __init__(self, store_name: str, location: str = '서울') -> None:
-        super().__init__(store_name, location)
-        self.info = self.get_results_by_location()
-        self.id = self._get_id()
+    def __init__(self, store: str,
+                 location: str = '서울', by_id: bool = False) -> None:
+        super().__init__(store, location)
+        if not by_id:
+            self.info = self.get_results_by_location()
+            self.id = self._get_id()
+        else:
+            self.id = store
 
     def _get_id(self) -> str:
         most_relevant = self.info['most_relevant']
