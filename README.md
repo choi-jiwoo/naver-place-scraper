@@ -20,7 +20,7 @@ $ pip install snstextscraper
 
 네이버 플레이스에 검색 결과에서 가장 첫번째 결과를 추출.
 
-검색 결과를 보고 싶을 땐 `store.info['search_results']`.
+네이버 지도의 첫번째 검색결과로 검색되는 업체 데이터를 가져오기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음. 그럴땐 `store.info['search_results']` 로 검색 결과를 확인해보고 검색하길 원하는 업체의 id로 검색.
 
 ```python
 from snstextscraper.naverplace import Store
