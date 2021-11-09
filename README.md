@@ -10,6 +10,8 @@ $ pip install snstextscraper
 
 ## Usage
 
+자세한 사용 방법은 [example](https://github.com/cho2ji/sns-text-scraper/tree/master/example) 디렉터리에 사용 예제 노트북 참고.
+
 ### Naver place
 
 네이버 플레이스에 등록된 업체들의 description 데이터과 review 데이터를 추출.
