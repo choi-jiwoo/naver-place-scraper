@@ -178,6 +178,6 @@ class Store(Search):
             }
             reviews.append(review)
 
-        reviews = pd.DataFrame(reviews)
+        reviews = pd.DataFrame(reviews, columns=['author', 'review'])
 
         return reviews
