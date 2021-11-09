@@ -30,16 +30,24 @@ class Search:
             print(f'{self.store}. 조건에 맞는 업체가 없습니다.')
 
     def get_results_by_location(self) -> dict:
-        candidate = self.get_search_result()
-        result_by_loc = candidate['roadAddress'].str.contains(self.location)
-        search_results = candidate[result_by_loc]
-        most_relevant = search_results.iloc[0]
-        info = {
-            'search_results': search_results,
-            'most_relevant': most_relevant,
-        }
+        try:
+            candidate = self.get_search_result()
+            pattern = f'[{self.location}]'
+            result_by_loc = candidate['roadAddress'].str.contains(
+                pattern,
+                regex=True,
+            )
+            search_results = candidate[result_by_loc]
+            most_relevant = search_results.iloc[0]
+            info = {
+                'search_results': search_results,
+                'most_relevant': most_relevant,
+            }
 
-        return info
+            return info
+        except IndexError:
+            print('지역 검색결과가 없습니다.')
+            return
 
 
 class Store(Search):
