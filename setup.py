@@ -27,7 +27,7 @@ project_urls = {
 
 setup(
     name='snstextscraper',
-    version='0.5.0',
+    version='0.5.1',
     author='Choi Jiwoo',
     author_email='cho2wldn@gmail.com',
     description=description,
