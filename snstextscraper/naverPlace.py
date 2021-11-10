@@ -68,12 +68,15 @@ class Store(Search):
         return store_id
 
     def get_description(self) -> str:
-        url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
-        data = HttpRequest(url).data
-        description = data['description']
-        keywords = data['keywords']  # might be used in the future
+        try:
+            url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
+            data = HttpRequest(url).data
+            description = data['description']
+            keywords = data['keywords']  # might be used in the future
 
-        return description
+            return description
+        except KeyError:
+            return
 
     def get_reviews(self, num_of_reviews: int = 100) -> dict:
         url = 'https://api.place.naver.com/graphql'
@@ -167,17 +170,20 @@ class Store(Search):
             },
             'query': query
         }
-        data = HttpRequest(url, 'post', payload).data
-        review_meta = data['data']['visitorReviews']['items']
-        reviews = []
+        try:
+            data = HttpRequest(url, 'post', payload).data
+            review_meta = data['data']['visitorReviews']['items']
+            reviews = []
 
-        for x in review_meta:
-            review = {
-                'author': x['author']['nickname'],
-                'review': x['body'],
-            }
-            reviews.append(review)
+            for x in review_meta:
+                review = {
+                    'author': x['author']['nickname'],
+                    'review': x['body'],
+                }
+                reviews.append(review)
 
-        reviews = pd.DataFrame(reviews, columns=['author', 'review'])
+            reviews = pd.DataFrame(reviews, columns=['author', 'review'])
 
-        return reviews
+            return reviews
+        except KeyError:
+            return
