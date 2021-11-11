@@ -19,6 +19,7 @@ install_requires = [
     'pandas>=1.3.3',
     'requests>=2.26.0',
     'selenium>=4.0.0',
+    'importlib_resources>=5.4.0'
 ]
 
 project_urls = {
@@ -27,13 +28,14 @@ project_urls = {
 
 setup(
     name='snstextscraper',
-    version='0.5.1',
+    version='0.6.4',
     author='Choi Jiwoo',
     author_email='cho2wldn@gmail.com',
     description=description,
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=find_packages(),
+    include_package_data=True,
     install_requires=install_requires,
     keywords=['python', 'sns', 'scraper', 'crawler'],
     license='MIT',
