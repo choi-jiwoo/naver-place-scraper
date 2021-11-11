@@ -1,11 +1,11 @@
 import pandas as pd
+from importlib import resources
+from importlib_resources import files
+import data
 from snstextscraper.httprequest import HttpRequest
 
-
-# default latitude and longitude used when opening map.
-BASE_LAT = 33.3789412
-BASE_LONG = 126.5618716
-
+# my_glsl_string = resources.read_text(data, 'kor_coordinates.txt', encoding='euc-kr')
+path_to_file = files(data).joinpath('kor_coordinates.txt')
 
 class Search:
 
@@ -13,10 +13,26 @@ class Search:
         self.store = store
         self.location = location
 
+    def get_coordinates(self) -> tuple:
+        path_to_file = files(data).joinpath('kor_coordinates.txt')
+        coordinates = pd.read_csv(path_to_file, delimiter=',', encoding='euc-kr')
+        coordinates['X'] = coordinates['X'].round(7)
+        coordinates['Y'] = coordinates['Y'].round(7)
+
+        pattern = f'({self.location}?)'
+        _ = coordinates['SIG_KOR_NM'].str.extract(pattern)
+        _ = _.fillna('')
+        most_relevant = coordinates.iloc[_[0].map(len).idxmax()]
+        longitude = most_relevant['X']
+        latitude = most_relevant['Y']
+
+        return (longitude, latitude)
+
     def get_search_result(self) -> str:
+        longitude, latitude = self.get_coordinates()
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
                f'query={self.store}&type=all&'
-               f'searchCoord={BASE_LONG};{BASE_LAT}&page=1&displayCount=10&'
+               f'searchCoord={longitude};{latitude}&page=1&displayCount=10&'
                'isPlaceRecommendationReplace=true&lang=ko')
 
         data = HttpRequest(url).data
