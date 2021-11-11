@@ -33,10 +33,7 @@ class Search:
         try:
             candidate = self.get_search_result()
             pattern = f'[{self.location}]'
-            result_by_loc = candidate['roadAddress'].str.contains(
-                pattern,
-                regex=True,
-            )
+            result_by_loc = candidate['roadAddress'].str.contains(pattern)
             search_results = candidate[result_by_loc]
             most_relevant = search_results.iloc[0]
             info = {
