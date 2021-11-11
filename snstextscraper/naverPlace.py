@@ -175,11 +175,12 @@ class Store(Search):
             for x in review_meta:
                 review = {
                     'author': x['author']['nickname'],
+                    'rating': x['rating'],
                     'review': x['body'],
                 }
                 reviews.append(review)
 
-            reviews = pd.DataFrame(reviews, columns=['author', 'review'])
+            reviews = pd.DataFrame(reviews, columns=['author', 'rating', 'review'])
 
             return reviews
         except KeyError:
