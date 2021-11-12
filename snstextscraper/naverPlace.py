@@ -4,8 +4,6 @@ from importlib_resources import files
 import data
 from snstextscraper.httprequest import HttpRequest
 
-# my_glsl_string = resources.read_text(data, 'kor_coordinates.txt', encoding='euc-kr')
-path_to_file = files(data).joinpath('kor_coordinates.txt')
 
 class Search:
 
