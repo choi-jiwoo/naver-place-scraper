@@ -190,5 +190,5 @@ class Store(Search):
             reviews = pd.DataFrame(reviews, columns=['author', 'rating', 'review'])
 
             return reviews
-        except KeyError:
+        except (TypeError, KeyError):
             return
