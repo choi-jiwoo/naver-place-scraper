@@ -26,7 +26,7 @@ class Search:
 
         return (longitude, latitude)
 
-    def get_search_result(self) -> str:
+    def get_search_result(self) -> dict:
         longitude, latitude = self.get_coordinates()
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
                f'query={self.store}&type=all&'
@@ -39,13 +39,6 @@ class Search:
             search_result = data['result']['place']['list']
             candidate = pd.DataFrame(search_result)
 
-            return candidate
-        except (TypeError, IndexError, KeyError):
-            print(f'{self.store}. 조건에 맞는 업체가 없습니다.')
-
-    def get_results_by_location(self) -> dict:
-        try:
-            candidate = self.get_search_result()
             pattern = f'[{self.location}]'
             result_by_loc = candidate['roadAddress'].str.contains(pattern)
             search_results = candidate[result_by_loc]
@@ -56,8 +49,8 @@ class Search:
             }
 
             return info
-        except IndexError:
-            print('지역 검색결과가 없습니다.')
+        except (TypeError, IndexError, KeyError):
+            print('검색 결과가 없습니다.')
             return
 
 
@@ -67,7 +60,7 @@ class Store(Search):
                  location: str = '서울', by_id: bool = False) -> None:
         super().__init__(store, location)
         if not by_id:
-            self.info = self.get_results_by_location()
+            self.info = self.get_search_result()
             self.id = self._get_id()
         else:
             self.id = store
