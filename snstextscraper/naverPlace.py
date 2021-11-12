@@ -66,6 +66,8 @@ class Store(Search):
             self.id = store
 
     def _get_id(self) -> str:
+        if self.info is None:
+            return
         most_relevant = self.info['most_relevant']
         store_id = most_relevant['id']
 
