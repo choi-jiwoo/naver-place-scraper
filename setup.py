@@ -11,14 +11,13 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 description = ('Scrapes text data about the store/company from '
-               'social network services.')
+               'Naver Place.')
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 install_requires = [
     'pandas>=1.3.3',
     'requests>=2.26.0',
-    'selenium>=4.0.0',
     'importlib_resources>=5.4.0'
 ]
 
@@ -28,7 +27,7 @@ project_urls = {
 
 setup(
     name='snstextscraper',
-    version='0.6.4',
+    version='0.7.0',
     author='Choi Jiwoo',
     author_email='cho2wldn@gmail.com',
     description=description,
