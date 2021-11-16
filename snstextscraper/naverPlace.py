@@ -1,3 +1,4 @@
+"""This module scrapes review data of a store from Naver Place."""
 import pandas as pd
 from importlib import resources
 from importlib_resources import files
