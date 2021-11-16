@@ -6,12 +6,24 @@ from snstextscraper.httprequest import HttpRequest
 
 
 class Search:
+    """A class representing a search result.
+
+    :param store: Store name or id.
+    :type store: str
+    :param location: Default location to search, defaults to '서울'
+    :type location: str, optional
+    """
 
     def __init__(self, store: str, location: str = '서울') -> None:
         self.store = store
         self.location = location
 
     def get_coordinates(self) -> tuple:
+        """Get coordinates of a given region.
+
+        :return: Longitude and latitude value of a region.
+        :rtype: tuple
+        """
         path_to_file = files(data).joinpath('kor_coordinates.txt')
         coordinates = pd.read_csv(path_to_file, delimiter=',', encoding='euc-kr')
         coordinates['X'] = coordinates['X'].round(7)
@@ -27,6 +39,11 @@ class Search:
         return (longitude, latitude)
 
     def get_search_result(self) -> dict:
+        """Get search result in naver place.
+
+        :return: Both search results and top search result.
+        :rtype: dict
+        """
         longitude, latitude = self.get_coordinates()
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
                f'query={self.store}&type=all&'
