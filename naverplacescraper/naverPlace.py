@@ -3,7 +3,7 @@ import pandas as pd
 from importlib import resources
 from importlib_resources import files
 import data
-from snstextscraper.httprequest import HttpRequest
+from naverplacescraper.httprequest import HttpRequest
 
 
 class Search:
