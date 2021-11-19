@@ -1,8 +1,6 @@
 """This module scrapes review data of a store from Naver Place."""
 import pandas as pd
-from importlib import resources
-from importlib_resources import files
-import data
+from naverplacescraper.coordinates import get_coordinates
 from naverplacescraper.httprequest import HttpRequest
 
 
@@ -19,33 +17,13 @@ class Search:
         self.store = store
         self.location = location
 
-    def get_coordinates(self) -> tuple:
-        """Get coordinates of a given region.
-
-        :return: Longitude and latitude value of a region.
-        :rtype: tuple
-        """
-        path_to_file = files(data).joinpath('kor_coordinates.txt')
-        coordinates = pd.read_csv(path_to_file, delimiter=',', encoding='euc-kr')
-        coordinates['X'] = coordinates['X'].round(7)
-        coordinates['Y'] = coordinates['Y'].round(7)
-
-        pattern = f'({self.location}?)'
-        _ = coordinates['SIG_KOR_NM'].str.extract(pattern)
-        _ = _.fillna('')
-        most_relevant = coordinates.iloc[_[0].map(len).idxmax()]
-        longitude = most_relevant['X']
-        latitude = most_relevant['Y']
-
-        return (longitude, latitude)
-
     def get_search_result(self) -> dict:
-        """Get search result in naver place.
+        """Get search result of a store in naver place.
 
         :return: Both search results and top search result.
         :rtype: dict
         """
-        longitude, latitude = self.get_coordinates()
+        longitude, latitude = get_coordinates(self.location)
         url = ('https://map.naver.com/v5/api/search?caller=pcweb&'
                f'query={self.store}&type=all&'
                f'searchCoord={longitude};{latitude}&page=1&displayCount=10&'
