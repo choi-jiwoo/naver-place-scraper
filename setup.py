@@ -22,11 +22,11 @@ install_requires = [
 ]
 
 project_urls = {
-  'Source': 'https://github.com/cho2ji/sns-text-scraper',
+  'Source': 'https://github.com/choi-jiwoo/naver-place-scraper',
 }
 
 setup(
-    name='snstextscraper',
+    name='naverplacescraper',
     version='0.7.0',
     author='Choi Jiwoo',
     author_email='cho2wldn@gmail.com',
