@@ -4,18 +4,27 @@ from naverplacescraper.coordinates import get_coordinates
 from naverplacescraper.httprequest import HttpRequest
 
 
-class Search:
-    """A class representing a search result.
+class Store:
+    """A class representing a store.
 
     :param store: Store name or id.
     :type store: str
     :param location: Default location to search, defaults to '서울'
     :type location: str, optional
+    :param by_id: Search with a store ID, defaults to False.
+    :type by_id: bool, optional
     """
 
-    def __init__(self, store: str, location: str = '서울') -> None:
+    def __init__(self, store: str, location: str = '서울',
+                 by_id: bool = False) -> None:
         self.store = store
         self.location = location
+
+        if by_id:
+            self.id = store
+        else:
+            self.info = self.get_search_result()
+            self.id = self._get_id()
 
     def get_search_result(self) -> dict:
         """Get search result of a store in naver place.
@@ -48,18 +57,6 @@ class Search:
         except (TypeError, IndexError, KeyError):
             print('검색 결과가 없습니다.')
             return
-
-
-class Store(Search):
-
-    def __init__(self, store: str,
-                 location: str = '서울', by_id: bool = False) -> None:
-        super().__init__(store, location)
-        if not by_id:
-            self.info = self.get_search_result()
-            self.id = self._get_id()
-        else:
-            self.id = store
 
     def _get_id(self) -> str:
         if self.info is None:
