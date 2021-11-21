@@ -1,0 +1,1 @@
+from naverplacescraper.naverplace import Store
