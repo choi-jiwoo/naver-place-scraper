@@ -1,3 +1,4 @@
+import pandas as pd
 from importlib import resources
 from importlib_resources import files
 import data
