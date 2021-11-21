@@ -17,16 +17,16 @@ class Store:
 
     def __init__(self, store: str, location: str = '서울',
                  by_id: bool = False) -> None:
-        self.store = store
         self.location = location
 
         if by_id:
             self.id = store
         else:
-            self.info = self.get_search_result()
+            self.store = store
+            self.search_result = self._get_search_result()
             self.id = self._get_id()
 
-    def get_search_result(self) -> dict:
+    def _get_search_result(self) -> dict:
         """Get search result of a store in naver place.
 
         :return: Both search results and top search result.
@@ -47,21 +47,16 @@ class Store:
             pattern = f'[{self.location}]'
             result_by_loc = candidate['roadAddress'].str.contains(pattern)
             search_results = candidate[result_by_loc]
-            most_relevant = search_results.iloc[0]
-            info = {
-                'search_results': search_results,
-                'most_relevant': most_relevant,
-            }
 
-            return info
+            return search_results
         except (TypeError, IndexError, KeyError):
             print('검색 결과가 없습니다.')
             return
 
     def _get_id(self) -> str:
-        if self.info is None:
+        if self.search_result is None:
             return
-        most_relevant = self.info['most_relevant']
+        most_relevant = self.search_result.iloc[0]
         store_id = most_relevant['id']
 
         return store_id
