@@ -25,7 +25,7 @@ $ pip install naverplacescraper
 네이버 지도의 첫번째 검색결과로 검색되는 업체 데이터를 가져오기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음. 그럴땐 `store.info['search_results']` 로 검색 결과를 확인해보고 검색하길 원하는 업체의 id로 검색.
 
 ```python
-from naverplacescraper.naverplace import Store
+from naverplacescraper import Store
 
 store = Store('<store name>', location='제주')  # location defaults to '서울'
 description = store.get_description()
@@ -39,7 +39,7 @@ search_results = store.info['search_results']  # list of search results
 업체의 id를 알때 사용.
 
 ```python
-from naverplacescraper.naverplace import Store
+from naverplacescraper import Store
 
 store = Store('21270438', location='제주', by_id=True)
 description = store.get_description()
