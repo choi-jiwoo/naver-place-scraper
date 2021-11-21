@@ -27,7 +27,7 @@ project_urls = {
 
 setup(
     name='naverplacescraper',
-    version='0.7.0',
+    version='0.7.1',
     author='Choi Jiwoo',
     author_email='cho2wldn@gmail.com',
     description=description,
