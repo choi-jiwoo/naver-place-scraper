@@ -7,9 +7,9 @@ from naverplacescraper.httprequest import HttpRequest
 class Store:
     """A class representing a store.
 
-    :param store: Store name or id.
+    :param store: Store name or ID.
     :type store: str
-    :param location: Default location to search, defaults to '서울'
+    :param location: Default location to search, defaults to '서울'.
     :type location: str, optional
     :param by_id: Search with a store ID, defaults to False.
     :type by_id: bool, optional
@@ -54,6 +54,11 @@ class Store:
             return
 
     def _get_id(self) -> str:
+        """Get store ID of a store registered in naver place.
+
+        :return: Store ID.
+        :rtype: str
+        """
         if self.search_result is None:
             return
         most_relevant = self.search_result.iloc[0]
@@ -62,6 +67,11 @@ class Store:
         return store_id
 
     def get_description(self) -> str:
+        """Get a store description.
+
+        :return: A store description.
+        :rtype: str
+        """
         try:
             url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
             data = HttpRequest(url).data
@@ -73,6 +83,13 @@ class Store:
             return
 
     def get_reviews(self, num_of_reviews: int = 100) -> dict:
+        """Get user reviews of a store.
+
+        :param num_of_reviews: Maximum number of reviews to get, defaults to 100.
+        :type num_of_reviews: int, optional
+        :return: Dictionary with author, rating, and review.
+        :rtype: dict
+        """
         url = 'https://api.place.naver.com/graphql'
         # grapql query
         query = ('query getVisitorReviews($input: VisitorReviewsInput) {'
