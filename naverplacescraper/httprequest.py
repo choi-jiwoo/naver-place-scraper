@@ -32,7 +32,7 @@ class HttpRequest:
     def request_json(self) -> dict:
         """Sends HTTP request to a server .
 
-        :return: Response data.
+        :return: Response data in dictionary.
         :rtype: dict
         """
         if self.type == 'get':
@@ -41,7 +41,20 @@ class HttpRequest:
             res = requests.post(self.url,
                                 headers=HttpRequest.headers,
                                 json=self.payload)
+        
+        json_data = self._convert_to_dict(res)
+        
+        return json_data
 
+    def _convert_to_dict(self, res: requests.Response) -> dict:
+        """Convert JSON response object to dictionary.
+
+        :param res: :class:`Response` object.
+        :type res: requests.Response
+        :raises :class:`requests.ConnectionError`: HTTP connection failure.
+        :return: Response data in dictionary.
+        :rtype: dict
+        """
         if res.status_code != 200:
             res.raise_for_status()
 
