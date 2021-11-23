@@ -1,9 +1,19 @@
+"""This module sends HTTP request to a server."""
 import requests
 import json
 from typing import Optional
 
 
 class HttpRequest:
+    """A class representing HTTP request.
+
+    :param url: Request url.
+    :type url: str
+    :param type: Request method. Either 'get or 'post', defaults to 'get'.
+    :type type: str, optional
+    :param payload: Payload to use in POST method, defaults to None.
+    :type payload: Optional[str], optional
+    """
 
     headers = {
         'User-Agent':
@@ -20,6 +30,11 @@ class HttpRequest:
         self.data = self.request_json()
 
     def request_json(self) -> dict:
+        """Sends HTTP request to a server .
+
+        :return: Response data.
+        :rtype: dict
+        """
         if self.type == 'get':
             res = requests.get(self.url, headers=HttpRequest.headers)
         elif self.type == 'post':
