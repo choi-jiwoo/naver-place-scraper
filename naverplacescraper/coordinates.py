@@ -1,3 +1,4 @@
+"""This module gets longitude and latitude of certain places in South Korea"""
 import pandas as pd
 from importlib import resources
 from importlib_resources import files
