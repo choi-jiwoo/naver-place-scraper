@@ -1,7 +1,7 @@
 """This module scrapes review data of a store from Naver Place."""
 import pandas as pd
 from naverplacescraper.coordinates import get_coordinates
-from naverplacescraper.httprequest import HttpRequest
+from naverplacescraper.httprequest import Get, Post
 
 
 class Store:
@@ -38,7 +38,8 @@ class Store:
                f'searchCoord={longitude};{latitude}&page=1&displayCount=10&'
                'isPlaceRecommendationReplace=true&lang=ko')
 
-        data = HttpRequest(url).data
+        get = Get(url)
+        data = get.response
 
         try:
             search_result = data['result']['place']['list']
@@ -74,13 +75,14 @@ class Store:
         """
         try:
             url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
-            data = HttpRequest(url).data
+            get = Get(url)
+            data = get.response
             description = data['description']
             keywords = data['keywords']  # might be used in the future
 
             return description
         except KeyError:
-            return
+            return  # parameter에 multiple 옵션을 넣어서 그에 따라 다르게 return
 
     def get_reviews(self, num_of_reviews: int = 100) -> dict:
         """Get user reviews of a store.
@@ -182,7 +184,8 @@ class Store:
             'query': query
         }
         try:
-            data = HttpRequest(url, 'post', payload).data
+            post = Post(url, payload)
+            data = post.response
             review_meta = data['data']['visitorReviews']['items']
             reviews = []
 
@@ -198,4 +201,4 @@ class Store:
 
             return reviews
         except (TypeError, KeyError):
-            return
+            return  # parameter에 multiple 옵션을 넣어서 그에 따라 다르게 return
