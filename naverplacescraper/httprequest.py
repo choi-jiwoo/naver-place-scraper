@@ -10,26 +10,26 @@ class HttpRequest(ABC):
 
     :param url: Request url.
     :type url: str
-
+    :param headers: HTTP request headers, defaults to None.
+    :type headers: Optional[str], optional
     """
-    
-    headers = {
-        'User-Agent':
-            ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                'AppleWebKit/537.36 (KHTML, like Gecko) '
-                'Chrome/94.0.4606.81 Safari/537.36')
-    }
 
     def __init__(self, url: str, headers: Optional[str] = None) -> None:
         self.url = url
-        if headers is not None:
-            self.headers = headers
+        self.headers = headers
 
     @abstractmethod
     def request(self) -> dict:
         """Sends HTTP request to a server."""
         pass
 
+    @property
+    def headers(self) -> str:
+        return self._headers
+
+    @headers.setter
+    def headers(self, headers) -> None:
+        self._headers = headers
 
     def _convert_to_dict(self, res: requests.Response) -> dict:
         """Convert JSON response object to dictionary.
@@ -57,6 +57,7 @@ class Get(HttpRequest):
         self.response = self.request()
 
     def request(self):
+        print(self.headers)
         res = requests.get(self.url, headers=self.headers)
         json_data = self._convert_to_dict(res)
         
