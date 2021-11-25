@@ -7,11 +7,6 @@ from typing import Optional
 
 class HttpRequest(ABC):
     """A class representing HTTP request.
-
-    :param url: Request url.
-    :type url: str
-    :param headers: HTTP request headers, defaults to None.
-    :type headers: Optional[str], optional
     """
 
     def __init__(self, url: str, headers: Optional[str] = None) -> None:
@@ -50,6 +45,11 @@ class HttpRequest(ABC):
 
 class Get(HttpRequest):
     """Sends GET request to a server.
+
+    :param url: Request url.
+    :type url: str
+    :param headers: HTTP request headers, defaults to None.
+    :type headers: Optional[str], optional
     """
 
     def __init__(self, url: str, headers: Optional[str] = None):
@@ -67,6 +67,10 @@ class Get(HttpRequest):
 class Post(HttpRequest):
     """Sends POST request to a server.
 
+    :param url: Request url.
+    :type url: str
+    :param headers: HTTP request headers, defaults to None.
+    :type headers: Optional[str], optional
     :param payload: Payload to use in POST method, defaults to None.
     :type payload: Optional[str], optional
     """
