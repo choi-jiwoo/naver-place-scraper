@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>naverplacescraper.naverplace &#8212; naverplacescraper 0.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for naverplacescraper.naverplace</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module scrapes review data of a store from Naver Place.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">naverplacescraper.coordinates</span> <span class="kn">import</span> <span class="n">get_coordinates</span>
+<span class="kn">from</span> <span class="nn">naverplacescraper.httprequest</span> <span class="kn">import</span> <span class="n">Get</span><span class="p">,</span> <span class="n">Post</span>
+
+
+<div class="viewcode-block" id="Store"><a class="viewcode-back" href="../../naverplacescraper.naverplace.html#naverplacescraper.naverplace.Store">[docs]</a><span class="k">class</span> <span class="nc">Store</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class representing a store.</span>
+
+<span class="sd">    :param store: Store name or ID.</span>
+<span class="sd">    :type store: str</span>
+<span class="sd">    :param location: Default location to search, defaults to &#39;서울&#39;.</span>
+<span class="sd">    :type location: str, optional</span>
+<span class="sd">    :param by_id: Search with a store ID, defaults to False.</span>
+<span class="sd">    :type by_id: bool, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;서울&#39;</span><span class="p">,</span>
+                 <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+
+        <span class="k">if</span> <span class="n">by_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">store</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="n">store</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_search_result</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_id</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_search_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get search result of a store in naver place.</span>
+
+<span class="sd">        :return: Both search results and top search result.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">longitude</span><span class="p">,</span> <span class="n">latitude</span> <span class="o">=</span> <span class="n">get_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://map.naver.com/v5/api/search?caller=pcweb&amp;&#39;</span>
+               <span class="sa">f</span><span class="s1">&#39;query=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="si">}</span><span class="s1">&amp;type=all&amp;&#39;</span>
+               <span class="sa">f</span><span class="s1">&#39;searchCoord=</span><span class="si">{</span><span class="n">longitude</span><span class="si">}</span><span class="s1">;</span><span class="si">{</span><span class="n">latitude</span><span class="si">}</span><span class="s1">&amp;page=1&amp;displayCount=10&amp;&#39;</span>
+               <span class="s1">&#39;isPlaceRecommendationReplace=true&amp;lang=ko&#39;</span><span class="p">)</span>
+
+        <span class="n">get</span> <span class="o">=</span> <span class="n">Get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">response</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">search_result</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">][</span><span class="s1">&#39;place&#39;</span><span class="p">][</span><span class="s1">&#39;list&#39;</span><span class="p">]</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">search_result</span><span class="p">)</span>
+
+            <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s1">]&#39;</span>
+            <span class="n">result_by_loc</span> <span class="o">=</span> <span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;roadAddress&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+            <span class="n">search_results</span> <span class="o">=</span> <span class="n">candidate</span><span class="p">[</span><span class="n">result_by_loc</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">search_results</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;검색 결과가 없습니다.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get store ID of a store registered in naver place.</span>
+
+<span class="sd">        :return: Store ID.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">most_relevant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_result</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">store_id</span> <span class="o">=</span> <span class="n">most_relevant</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">store_id</span>
+
+<div class="viewcode-block" id="Store.get_description"><a class="viewcode-back" href="../../naverplacescraper.naverplace.html#naverplacescraper.naverplace.Store.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get a store description.</span>
+
+<span class="sd">        :return: A store description.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://map.naver.com/v5/api/sites/summary/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">?lang=ko&#39;</span>
+            <span class="n">get</span> <span class="o">=</span> <span class="n">Get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">response</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+            <span class="n">keywords</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]</span>  <span class="c1"># might be used in the future</span>
+
+            <span class="k">return</span> <span class="n">description</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># parameter에 multiple 옵션을 넣어서 그에 따라 다르게 return</span></div>
+
+<div class="viewcode-block" id="Store.get_reviews"><a class="viewcode-back" href="../../naverplacescraper.naverplace.html#naverplacescraper.naverplace.Store.get_reviews">[docs]</a>    <span class="k">def</span> <span class="nf">get_reviews</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_of_reviews</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get user reviews of a store.</span>
+
+<span class="sd">        :param num_of_reviews: Maximum number of reviews to get, defaults to 100.</span>
+<span class="sd">        :type num_of_reviews: int, optional</span>
+<span class="sd">        :return: Dictionary with author, rating, and review.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://api.place.naver.com/graphql&#39;</span>
+        <span class="c1"># grapql query</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;query getVisitorReviews($input: VisitorReviewsInput) {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  visitorReviews(input: $input) {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    items {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      id&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      rating&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      author {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        id&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        nickname&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        from&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        imageUrl&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        objectId&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        url&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        review {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">          totalCount&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">          imageCount&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">          avgRating&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">          __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      body&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      thumbnail&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      media {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        type&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        thumbnail&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      tags&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      status&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      visitCount&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      viewCount&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      visited&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      created&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      reply {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        editUrl&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        body&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        editedBy&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        created&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        replyTitle&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      originType&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      item {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        name&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        code&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        options&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      language&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      highlightOffsets&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      translatedText&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      businessName&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      showBookingItemName&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      showBookingItemOptions&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      bookingItemName&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      bookingItemOptions&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    starDistribution {&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      score&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      count&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">      __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    hideProductSelectBox&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    total&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    __typename&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  }&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">}&#39;</span>
+                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;operationName&#39;</span><span class="p">:</span> <span class="s1">&#39;getVisitorReviews&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;variables&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;input&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;businessId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s1">&#39;businessType&#39;</span><span class="p">:</span> <span class="s1">&#39;restaurant&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;bookingBusinessId&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="n">num_of_reviews</span><span class="p">,</span>
+                    <span class="s1">&#39;isPhotoUsed&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s1">&#39;theme&#39;</span><span class="p">:</span> <span class="s1">&#39;allTypes&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;includeContent&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s1">&#39;getAuthorInfo&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="n">query</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">response</span>
+            <span class="n">review_meta</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;visitorReviews&#39;</span><span class="p">][</span><span class="s1">&#39;items&#39;</span><span class="p">]</span>
+            <span class="n">reviews</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">review_meta</span><span class="p">:</span>
+                <span class="n">review</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">][</span><span class="s1">&#39;nickname&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;review&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">],</span>
+                <span class="p">}</span>
+                <span class="n">reviews</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">review</span><span class="p">)</span>
+
+            <span class="n">reviews</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">reviews</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="s1">&#39;review&#39;</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">reviews</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="k">return</span>  <span class="c1"># parameter에 multiple 옵션을 넣어서 그에 따라 다르게 return</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">naverplacescraper</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Choi Jiwoo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
