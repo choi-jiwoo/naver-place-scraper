@@ -57,7 +57,6 @@ class Get(HttpRequest):
         self.response = self.request()
 
     def request(self):
-        print(self.headers)
         res = requests.get(self.url, headers=self.headers)
         json_data = self._convert_to_dict(res)
         
