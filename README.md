@@ -41,7 +41,7 @@ search_results = store.info['search_results']  # list of search results
 ```python
 from naverplacescraper import Store
 
-store = Store('21270438', location='제주', by_id=True)
+store = Store('<store ID>', location='제주', by_id=True)
 description = store.get_description()
 reviews = store.get_reviews()
 ```
