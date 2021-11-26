@@ -8,6 +8,10 @@ Welcome to naverplacescraper's documentation!
 
 **naverplacescraper** is a package that scrapes description data and review data of a store registered in `Naver Place <https://map.naver.com>`_.
 
+.. warning::
+
+   The package only supports Korean language
+
 **Installation**
 ----------------
 
@@ -31,14 +35,22 @@ Searching by name
    description = store.get_description()
    reviews = store.get_reviews()  # defaults to 100 reviews.
 
-Documentation
-~~~~~~~~~~~~~
+Searching by ID
+~~~~~~~~~~~~~~~
 
-The documentation is built with `Sphinx <https://www.sphinx-doc.org/en/master/index.html>`_.
+Search with the store ID registered in naver place.
+
+.. code-block:: python
+
+   from naverplacescraper import Store
+
+   store = Store('<store ID>', location='제주', by_id=True)
+   description = store.get_description()
+   reviews = store.get_reviews()
 
 .. toctree::
    :hidden:
-
+   
    naverplacescraper
 
 **License**

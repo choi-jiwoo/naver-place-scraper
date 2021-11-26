@@ -190,6 +190,10 @@
           <section id="welcome-to-naverplacescraper-s-documentation">
 <h1>Welcome to naverplacescraper’s documentation!<a class="headerlink" href="#welcome-to-naverplacescraper-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p><strong>naverplacescraper</strong> is a package that scrapes description data and review data of a store registered in <a class="reference external" href="https://map.naver.com">Naver Place</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The package only supports Korean language</p>
+</div>
 <section id="installation">
 <h2><strong>Installation</strong><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>To use <strong>naverplacescraper</strong>, first install it using pip:</p>
@@ -209,9 +213,16 @@
 </pre></div>
 </div>
 </section>
-<section id="documentation">
-<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
-<p>The documentation is built with <a class="reference external" href="https://www.sphinx-doc.org/en/master/index.html">Sphinx</a>.</p>
+<section id="searching-by-id">
+<h3>Searching by ID<a class="headerlink" href="#searching-by-id" title="Permalink to this headline">¶</a></h3>
+<p>Search with the store ID registered in naver place.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">naverplacescraper</span> <span class="kn">import</span> <span class="n">Store</span>
+
+<span class="n">store</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="s1">'&lt;store ID&gt;'</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">'제주'</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">description</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+<span class="n">reviews</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_reviews</span><span class="p">()</span>
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -275,7 +286,7 @@
 <li><a class="reference internal" href="#installation"><strong>Installation</strong></a></li>
 <li><a class="reference internal" href="#quick-start"><strong>Quick Start</strong></a><ul>
 <li><a class="reference internal" href="#searching-by-name">Searching by name</a></li>
-<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#searching-by-id">Searching by ID</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#license"><strong>License</strong></a></li>
