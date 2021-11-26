@@ -48,6 +48,8 @@ Search with the store ID registered in naver place.
    description = store.get_description()
    reviews = store.get_reviews()
 
+For more example, see notebook `here <https://github.com/choi-jiwoo/naver-place-scraper/blob/master/example/naverplace.ipynb>`_.
+
 .. toctree::
    :hidden:
    
