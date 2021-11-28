@@ -4,6 +4,11 @@ from naverplacescraper.coordinates import get_coordinates
 from naverplacescraper.httprequest import Get, Post
 
 
+class EmptyResult(Exception):
+    """When the result is empty."""
+    pass
+
+
 class Store:
     """A class representing a store.
 
