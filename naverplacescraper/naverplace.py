@@ -21,8 +21,9 @@ class Store:
     """
 
     def __init__(self, store: str, location: str = '서울',
-                 by_id: bool = False) -> None:
+                 by_id: bool = False, empty_error: bool = False) -> None:
         self.location = location
+        self.empty_error = empty_error
 
         if by_id:
             self.id = store
@@ -56,8 +57,10 @@ class Store:
 
             return search_results
         except (TypeError, IndexError, KeyError):
-            print('검색 결과가 없습니다.')
-            return
+            if self.empty_error:
+                raise EmptyResult()
+            else:
+                return
 
     def _get_id(self) -> str:
         """Get store ID of a store registered in naver place.
@@ -87,7 +90,10 @@ class Store:
 
             return description
         except KeyError:
-            return  # parameter에 multiple 옵션을 넣어서 그에 따라 다르게 return
+            if self.empty_error:
+                raise EmptyResult()
+            else:
+                return
 
     def get_reviews(self, num_of_reviews: int = 100) -> dict:
         """Get user reviews of a store.
@@ -206,4 +212,7 @@ class Store:
 
             return reviews
         except (TypeError, KeyError):
-            return  # parameter에 multiple 옵션을 넣어서 그에 따라 다르게 return
+            if self.empty_error:
+                raise EmptyResult()
+            else:
+                return
