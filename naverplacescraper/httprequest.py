@@ -8,7 +8,7 @@ from typing import Optional
 class HttpRequest(ABC):
     """A class representing HTTP request.
     """
-
+# 
     def __init__(self, url: str, headers: Optional[str] = None) -> None:
         self.url = url
         self.headers = headers
@@ -17,14 +17,6 @@ class HttpRequest(ABC):
     def request(self) -> dict:
         """Sends HTTP request to a server."""
         pass
-
-    @property
-    def headers(self) -> str:
-        return self._headers
-
-    @headers.setter
-    def headers(self, headers) -> None:
-        self._headers = headers
 
     def _convert_to_dict(self, res: requests.Response) -> dict:
         """Convert JSON response object to dictionary.
@@ -74,8 +66,8 @@ class Post(HttpRequest):
     :type payload: Optional[str], optional
     """
 
-    def __init__(self, url: str, headers: Optional[str] = None,
-                 payload: Optional[str] = None) -> None:
+    def __init__(self, url: str, payload: dict,
+                 headers: Optional[str] = None) -> None:
         super().__init__(url, headers)
         self.payload = payload
         self.response = self.request()
