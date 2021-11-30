@@ -1,1 +1,1 @@
-from naverplacescraper.naverplace import Store
+from naverplacescraper.naverplace import NaverPlace

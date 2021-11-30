@@ -4,8 +4,8 @@ from naverplacescraper.coordinates import get_coordinates
 from naverplacescraper.httprequest import Get, Post
 
 
-class Store:
-    """A class representing a store.
+class NaverPlace:
+    """A class representing a store registered in Naver place.
 
     :param store: Store name or ID.
     :type store: str
