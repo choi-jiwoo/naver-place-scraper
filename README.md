@@ -10,7 +10,7 @@ $ pip install naverplacescraper
 
 ## Usage
 
-자세한 사용 방법은 [example](https://github.com/choi-jiwoo/naver-place-scraper) 디렉터리에 사용 예제 노트북 참고.
+사용 예제 [notebook](https://github.com/choi-jiwoo/naver-place-scraper) 참고.
 
 ### Naver place
 
@@ -18,32 +18,16 @@ $ pip install naverplacescraper
 
 #### Quick start
 
-**Search by name**
-
-네이버 플레이스에 검색 결과에서 가장 첫번째 결과를 추출.
-
-네이버 지도의 첫번째 검색결과로 검색되는 업체 데이터를 가져오기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음. 그럴땐 `store.info['search_results']` 로 검색 결과를 확인해보고 검색하길 원하는 업체의 id로 검색.
+[네이버 지도](map.naver.com)에서 첫번째 검색결과로 검색되는 업체의 데이터를 가져옴. 그렇기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음.
 
 ```python
-from naverplacescraper import Store
+from naverplacescraper import NaverPlace
 
-store = Store('<store name>', location='제주')  # location defaults to '서울'
+store = NaverPlace('<store name>')
+results_df = store.search_result  # list of search results
+
 description = store.get_description()
 reviews = store.get_reviews()  # defaults to 100 reviews.
-
-search_results = store.info['search_results']  # list of search results
-```
-
-**Search by id**
-
-업체의 id를 알때 사용.
-
-```python
-from naverplacescraper import Store
-
-store = Store('<store ID>', location='제주', by_id=True)
-description = store.get_description()
-reviews = store.get_reviews()
 ```
 
 #### Output
