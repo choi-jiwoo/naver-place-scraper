@@ -2,6 +2,7 @@
 import pandas as pd
 from naverplacescraper.coordinates import get_coordinates
 from naverplacescraper.httprequest import Get, Post
+from naverplacescraper.utils import empty_result
 
 
 class NaverPlace:
