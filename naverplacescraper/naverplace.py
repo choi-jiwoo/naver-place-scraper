@@ -57,17 +57,10 @@ class NaverPlace:
             return
 
     def _get_id(self) -> str:
-        """Get store ID of a store registered in naver place.
+        first = self.search_result.iloc[0]
+        first_id = first['id']
 
-        :return: Store ID.
-        :rtype: str
-        """
-        if self.search_result is None:
-            return
-        most_relevant = self.search_result.iloc[0]
-        store_id = most_relevant['id']
-
-        return store_id
+        return first_id
 
     def get_description(self) -> str:
         """Get a store description.
