@@ -1,4 +1,5 @@
 """This module scrapes review data of a store from Naver Place."""
+from typing import Optional
 import pandas as pd
 from naverplacescraper.coordinates import get_coordinates
 from naverplacescraper.httprequest import Get, Post
@@ -17,16 +18,14 @@ class NaverPlace:
     """
 
     def __init__(self, store: str, location: str = '서울',
-                 by_id: bool = False, empty_error: bool = False) -> None:
+                 headers: Optional[str] = None) -> None:
+        self.store = store
         self.location = location
-        self.empty_error = empty_error
+        self.headers = headers
 
-        if by_id:
-            self.id = store
-        else:
-            self.store = store
-            self.search_result = self._get_search_result()
-            self.id = self._get_id()
+        self.search_result = self._get_search_result()
+        self.id = self._get_id()
+        self.raw_review_data = None
 
     def _get_search_result(self) -> dict:
         """Get search result of a store in naver place.
