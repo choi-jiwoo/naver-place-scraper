@@ -39,7 +39,7 @@ class NaverPlace:
                f'searchCoord={longitude};{latitude}&page=1&displayCount=10&'
                'isPlaceRecommendationReplace=true&lang=ko')
 
-        get = Get(url)
+        get = Get(url, self.headers)
         data = get.response
 
         try:
@@ -76,7 +76,7 @@ class NaverPlace:
         """
         try:
             url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
-            get = Get(url)
+            get = Get(url, self.headers)
             data = get.response
             description = data['description']
             keywords = data['keywords']  # might be used in the future
