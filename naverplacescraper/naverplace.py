@@ -52,10 +52,8 @@ class NaverPlace:
 
             return search_results
         except (TypeError, IndexError, KeyError):
-            if self.empty_error:
-                raise EmptyResult()
-            else:
-                return
+            empty_result(f'[{self.store}]에 대한 검색 결과가 존재하지 않습니다.')
+            return
 
     def _get_id(self) -> str:
         """Get store ID of a store registered in naver place.
@@ -85,10 +83,8 @@ class NaverPlace:
 
             return description
         except KeyError:
-            if self.empty_error:
-                raise EmptyResult()
-            else:
-                return
+            empty_result()
+            return
 
     def get_reviews(self, num_of_reviews: int = 100) -> dict:
         """Get user reviews of a store.
@@ -202,12 +198,9 @@ class NaverPlace:
                     'review': x['body'],
                 }
                 reviews.append(review)
+        except (TypeError, KeyError):
+            empty_result()
 
             reviews = pd.DataFrame(reviews, columns=['author', 'rating', 'review'])
 
             return reviews
-        except (TypeError, KeyError):
-            if self.empty_error:
-                raise EmptyResult()
-            else:
-                return
