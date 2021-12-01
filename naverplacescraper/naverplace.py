@@ -2,8 +2,9 @@
 from typing import Optional
 import pandas as pd
 from naverplacescraper.coordinates import get_coordinates
-from naverplacescraper.httprequest import Get, Post
 from naverplacescraper.utils import empty_result
+from naverplacescraper.httprequest import Get
+from naverplacescraper.httprequest import Post
 
 
 class NaverPlace:
