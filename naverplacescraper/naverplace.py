@@ -28,7 +28,7 @@ class NaverPlace:
         self.id = self._get_id()
         self.raw_review_data = None
 
-    def _get_search_result(self) -> dict:
+    def _get_search_result(self) -> pd.DataFrame:
         """Get search result of a store in naver place.
 
         :return: Both search results and top search result.
