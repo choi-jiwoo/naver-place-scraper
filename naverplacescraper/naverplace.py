@@ -1,4 +1,4 @@
-"""This module scrapes review data of a store from Naver Place."""
+"""This module retrieves search results from Naver place."""
 from typing import Optional
 import pandas as pd
 from naverplacescraper.coordinates import get_coordinates
@@ -14,8 +14,8 @@ class NaverPlace:
     :type store: str
     :param location: Default location to search, defaults to '서울'.
     :type location: str, optional
-    :param by_id: Search with a store ID, defaults to False.
-    :type by_id: bool, optional
+    :param headers: Headers to pass in a HTTP request, defaults to None.
+    :type headers: Optional[str], optional
     """
 
     def __init__(self, store: str, location: str = '서울',
@@ -69,7 +69,8 @@ class NaverPlace:
     def get_description(self) -> str:
         """Get a store description.
 
-        :return: A store description.
+        :return: A store description. `None` is returned when the
+            result is empty.
         :rtype: str
         """
         try:
