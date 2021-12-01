@@ -86,13 +86,11 @@ class NaverPlace:
             empty_result()
             return
 
-    def get_reviews(self, num_of_reviews: int = 100) -> dict:
-        """Get user reviews of a store.
+    def _get_raw_reviews(self, num_of_reviews: int) -> None:
+        """Get a raw user review data of a store.
 
-        :param num_of_reviews: Maximum number of reviews to get, defaults to 100.
-        :type num_of_reviews: int, optional
-        :return: Dictionary with author, rating, and review.
-        :rtype: dict
+        :param num_of_reviews: Maximum number of reviews to get.
+        :type num_of_reviews: int
         """
         url = 'https://api.place.naver.com/graphql'
         # grapql query
@@ -186,21 +184,33 @@ class NaverPlace:
             'query': query
         }
         try:
-            post = Post(url, payload)
+            post = Post(url, payload, self.headers)
             data = post.response
-            review_meta = data['data']['visitorReviews']['items']
-            reviews = []
+            raw_review_data = data['data']['visitorReviews']['items']
 
-            for x in review_meta:
-                review = {
-                    'author': x['author']['nickname'],
-                    'rating': x['rating'],
-                    'review': x['body'],
-                }
-                reviews.append(review)
+            self.raw_review_data = raw_review_data
         except (TypeError, KeyError):
             empty_result()
+            
+    def get_reviews(self, num_of_reviews: int = 100) -> pd.DataFrame:
+        self._get_raw_reviews(num_of_reviews)
 
-            reviews = pd.DataFrame(reviews, columns=['author', 'rating', 'review'])
+        if self.raw_review_data is None:
+            return
 
-            return reviews
+        reviews = []
+
+        for x in self.raw_review_data:
+            review = {
+                'date': x['visited'],
+                'author': x['author']['nickname'],
+                'review': x['body'],
+            }
+            reviews.append(review)
+
+        reviews = pd.DataFrame(
+            reviews,
+            columns=['date', 'author', 'review'],
+        )
+
+        return reviews
