@@ -51,6 +51,10 @@ class NaverPlace:
             result_by_loc = candidate['roadAddress'].str.contains(pattern)
             search_results = candidate[result_by_loc]
 
+            if search_results.empty:
+                empty_result()
+                return
+
             return search_results
         except (TypeError, IndexError, KeyError):
             empty_result(f'[{self.store}]에 대한 검색 결과가 존재하지 않습니다.')
