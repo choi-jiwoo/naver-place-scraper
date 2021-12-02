@@ -61,6 +61,11 @@ class NaverPlace:
             return
 
     def _get_id(self) -> str:
+        """Get an id of the first search result.
+
+        :return: Id of the store.
+        :rtype: str
+        """
         first = self.search_result.iloc[0]
         first_id = first['id']
 
