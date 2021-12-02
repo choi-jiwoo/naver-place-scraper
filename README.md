@@ -24,8 +24,6 @@ $ pip install naverplacescraper
 from naverplacescraper import NaverPlace
 
 store = NaverPlace('<store name>')
-results_df = store.search_result  # list of search results
-
 description = store.get_description()
 reviews = store.get_reviews()  # defaults to 100 reviews.
 ```
