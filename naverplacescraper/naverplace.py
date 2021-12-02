@@ -197,6 +197,13 @@ class NaverPlace:
             empty_result()
             
     def get_reviews(self, num_of_reviews: int = 100) -> pd.DataFrame:
+        """Extract visit date, author, and review data of a store from raw review data.
+
+        :param num_of_reviews: Maximum number of reviews to get, defaults to 100
+        :type num_of_reviews: int, optional
+        :return: Review data with date, author, and reviews.
+        :rtype: pd.DataFrame
+        """
         self._get_raw_reviews(num_of_reviews)
 
         if self.raw_review_data is None:
