@@ -46,7 +46,6 @@ class Get(HttpRequest):
 
     def __init__(self, url: str, headers: Optional[str] = None):
         super().__init__(url, headers)
-        self.response = self.request()
 
     def request(self) -> dict:
         res = requests.get(self.url, headers=self.headers)
@@ -70,7 +69,6 @@ class Post(HttpRequest):
                  headers: Optional[str] = None) -> None:
         super().__init__(url, headers)
         self.payload = payload
-        self.response = self.request()
     
     def request(self) -> dict:
         res = requests.post(self.url, headers=self.headers, json=self.payload)
