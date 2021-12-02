@@ -25,7 +25,8 @@ class NaverPlace:
         self.headers = headers
 
         self.search_result = self._get_search_result()
-        self.id = self._get_id()
+        self.info = self._summarize_info()
+        self._id = self.info['id']
         self.raw_review_data = None
 
     def _get_search_result(self) -> pd.DataFrame:
@@ -60,16 +61,26 @@ class NaverPlace:
             empty_result(f'[{self.store}]에 대한 검색 결과가 존재하지 않습니다.')
             return
 
-    def _get_id(self) -> str:
-        """Get an id of the first search result.
+    def _summarize_info(self) -> pd.Series:
+        """Get summarized information of the first search result.
 
-        :return: Id of the store.
-        :rtype: str
+        :return: Summarized store info
+        :rtype: pd.Series
         """
         first = self.search_result.iloc[0]
-        first_id = first['id']
+        info_list = [
+            'id',
+            'name',
+            'tel',
+            'roadAddress',
+            'reviewCount',
+            'bizhourInfo',
+            'x',
+            'y',
+        ]
+        info = first[info_list]
 
-        return first_id
+        return info
 
     def get_description(self) -> str:
         """Get a store description.
@@ -78,8 +89,8 @@ class NaverPlace:
             result is empty.
         :rtype: str
         """
+        url = f'https://map.naver.com/v5/api/sites/summary/{self._id}?lang=ko'
         try:
-            url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
             get = Get(url, self.headers)
             data = get.request()
             description = data['description']
@@ -172,7 +183,7 @@ class NaverPlace:
             'operationName': 'getVisitorReviews',
             'variables': {
                 'input': {
-                    'businessId': self.id,
+                    'businessId': self._id,
                     'businessType': 'restaurant',
                     'item': '0',
                     'bookingBusinessId': None,
@@ -183,7 +194,7 @@ class NaverPlace:
                     'includeContent': True,
                     'getAuthorInfo': False,
                 },
-                'id': self.id,
+                'id': self._id,
             },
             'query': query
         }
