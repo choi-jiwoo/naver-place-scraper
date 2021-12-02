@@ -41,7 +41,7 @@ class NaverPlace:
                'isPlaceRecommendationReplace=true&lang=ko')
 
         get = Get(url, self.headers)
-        data = get.response
+        data = get.request()
 
         try:
             search_result = data['result']['place']['list']
@@ -81,7 +81,7 @@ class NaverPlace:
         try:
             url = f'https://map.naver.com/v5/api/sites/summary/{self.id}?lang=ko'
             get = Get(url, self.headers)
-            data = get.response
+            data = get.request()
             description = data['description']
             keywords = data['keywords']  # might be used in the future
 
@@ -189,7 +189,7 @@ class NaverPlace:
         }
         try:
             post = Post(url, payload, self.headers)
-            data = post.response
+            data = post.request()
             raw_review_data = data['data']['visitorReviews']['items']
 
             self.raw_review_data = raw_review_data
