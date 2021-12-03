@@ -29,7 +29,7 @@ setup(
     name='naverplacescraper',
     version='0.7.1',
     author='Choi Jiwoo',
-    author_email='cho2wldn@gmail.com',
+    author_email='cho2.jiwoo@gmail.com',
     description=description,
     long_description=long_description,
     long_description_content_type='text/markdown',
