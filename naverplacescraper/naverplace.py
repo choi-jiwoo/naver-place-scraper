@@ -236,3 +236,6 @@ class NaverPlace:
         )
 
         return reviews
+
+    def __repr__(self) -> str:
+        return f'NaverPlace(store="{self.store}", location="{self.location}")'
