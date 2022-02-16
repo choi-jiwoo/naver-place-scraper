@@ -27,6 +27,14 @@ class NaverPlace:
         self.info = self._summarize_info()
         self._id = self.info['id']
         self.raw_review_data = None
+        
+    def attach_headers(self, headers: dict) -> None:
+        """Attach custom HTTP headers.
+        
+        :param headers: HTTP headers.
+        :type headers: dict
+        """
+        self.headers = headers
 
     def _get_search_result(self) -> pd.DataFrame:
         """Get search result of a store in naver place.
