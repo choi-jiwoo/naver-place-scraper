@@ -14,15 +14,14 @@ class NaverPlace:
     :type store: str
     :param location: Default location to search, defaults to '서울'.
     :type location: str, optional
-    :param headers: Headers to pass in a HTTP request, defaults to None.
-    :type headers: Optional[str], optional
     """
+    
+    #: Default headers to pass in a HTTP request.
+    headers = {'User-Agent': 'Mozilla'}
 
-    def __init__(self, store: str, location: str = '서울',
-                 headers: Optional[str] = None) -> None:
+    def __init__(self, store: str, location: str = '서울') -> None:
         self.store = store
         self.location = location
-        self.headers = headers
 
         self.search_result = self._get_search_result()
         self.info = self._summarize_info()
