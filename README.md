@@ -21,25 +21,22 @@ $ pip install naverplacescraper
 [네이버 지도](map.naver.com)에서 첫번째 검색결과로 검색되는 업체의 데이터를 가져옴. 그렇기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음.
 
 ```python
-from naverplacescraper import NaverPlace
-
-store = NaverPlace('<store name>')
-description = store.get_description()
-reviews = store.get_reviews()  # defaults to 100 reviews.
+>>> from naverplacescraper import NaverPlace
+>>> store_name = 'xxxxxx'
+>>> store = NaverPlace(store_name)
+>>> description = store.get_description()
+>>> reviews = store.get_reviews()  # defaults to 100 reviews.
 ```
 
 #### Output
 
 ```
-description: str
-
+>>> description
 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-
-reviews: pandas.DataFrame
-
-| author | review |
-|--------|--------|
-|   xxxx | xxxxxx |
+>>> reviews
+|  date  | author | review |
+|--------|--------|--------|
+|  x.x.X |   xxxx | xxxxxx |
 ```
 
 ## Credit
