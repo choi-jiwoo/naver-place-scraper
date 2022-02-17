@@ -17,7 +17,10 @@ class NaverPlace:
     """
     
     #: Default headers to pass in a HTTP request.
-    headers = {'User-Agent': 'Mozilla'}
+    headers = {
+        'User-Agent': 'Mozilla',
+        'content-type': 'application/json',
+    }
 
     def __init__(self, store: str, location: str = '서울') -> None:
         self.store = store
