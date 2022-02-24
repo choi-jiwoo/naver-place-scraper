@@ -34,9 +34,9 @@ $ pip install naverplacescraper
 >>> description
 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 >>> reviews
-|  date  | author | review |
-|--------|--------|--------|
-|  x.x.X |   xxxx | xxxxxx |
+|  date  | review |
+|--------|--------|
+|  x.x.X | xxxxxx |
 ```
 
 ## Credit
