@@ -235,14 +235,13 @@ class NaverPlace:
         for x in self.raw_review_data:
             review = {
                 'date': x['visited'],
-                'author': x['author']['nickname'],
                 'review': x['body'],
             }
             reviews.append(review)
 
         reviews = pd.DataFrame(
             reviews,
-            columns=['date', 'author', 'review'],
+            columns=['date', 'review'],
         )
 
         return reviews
