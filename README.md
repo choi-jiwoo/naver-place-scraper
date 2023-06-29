@@ -18,8 +18,6 @@ $ pip install naverplacescraper
 
 #### Quick start
 
-[네이버 지도](map.naver.com)에서 첫번째 검색결과로 검색되는 업체의 데이터를 가져옴. 그렇기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음.
-
 ```python
 >>> from naverplacescraper import NaverPlace
 >>> store_name = 'xxxxxx'
@@ -36,8 +34,12 @@ $ pip install naverplacescraper
 >>> reviews
 |  date  | review |
 |--------|--------|
-|  x.x.X | xxxxxx |
+|  x.x.x | xxxxxx |
 ```
+
+> **Warning**
+> 
+> [네이버 지도](map.naver.com)에서 첫번째 검색결과로 검색되는 업체의 데이터를 가져옴. 그렇기 때문에 검색결과에 따라 원하는 업체의 데이터가 뽑히지 않을 수 있음.
 
 ## Credit
 
